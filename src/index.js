@@ -5,8 +5,12 @@ import sum from "@/test";
 import { RouterProvider } from "react-router-dom";
 import router from "./router/index";
 import "./theme.css";
-
-const total = sum(1, 3);
+import { Provider } from "react-redux";
+import store from "./store/index";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={router}></RouterProvider>);
+root.render(
+  <Provider store={store}>
+    <RouterProvider router={router}></RouterProvider>
+  </Provider>
+);
