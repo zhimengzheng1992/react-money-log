@@ -1,5 +1,5 @@
 import { NavBar, DatePicker } from "antd-mobile";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import "./index.scss";
 import classNames from "classnames";
 import dayjs from "dayjs";
@@ -18,7 +18,6 @@ const Month = () => {
   }, [billList]);
   // console.log(sortedList);
 
-  //Confirm callback
   const [currentList, setCurrentList] = useState([]);
   const { income, pay, total } = useMemo(() => {
     const income = currentList
@@ -34,6 +33,11 @@ const Month = () => {
     };
   }, [currentList]);
 
+  useEffect(() => {
+    const currentMonth = dayjs().format("YYYY | MM");
+    setCurrentList(sortedList[currentMonth] || []);
+  }, [sortedList]);
+  //Confirm callback
   const onConfirm = (date) => {
     setDatePickerVisible(false);
     // console.log(date);
