@@ -12,17 +12,38 @@ const Month = () => {
     dayjs(new Date()).format("YYYY | MM")
   );
   const billList = useSelector((state) => state.bill.billList);
-  console.log(billList);
+  // console.log(billList);
   const sortedList = useMemo(() => {
-    // const sortedList =
     return _.groupBy(billList, (item) => dayjs(item.date).format("YYYY | MM"));
   }, [billList]);
-  console.log(sortedList);
+  // console.log(sortedList);
+
+  //Confirm callback
+  const [currentList, setCurrentList] = useState([]);
+  const { income, pay, total } = useMemo(() => {
+    const income = currentList
+      .filter((item) => item.type === "income")
+      .reduce((acc, curr) => acc + curr.money, 0);
+    const pay = currentList
+      .filter((item) => item.type === "pay")
+      .reduce((acc, curr) => acc + curr.money, 0);
+    return {
+      income,
+      pay,
+      total: income + pay,
+    };
+  }, [currentList]);
+
   const onConfirm = (date) => {
     setDatePickerVisible(false);
-    console.log(date);
-    setCurrentDate(dayjs(date).format("YYYY | MM"));
+    // console.log(date);
+    const formattedDate = dayjs(date).format("YYYY | MM");
+    setCurrentDate(formattedDate);
+    // console.log(sortedList[formattedDate]);
+    const list = sortedList[formattedDate] || [];
+    setCurrentList(list);
   };
+
   return (
     <div className="monthlyBill">
       <NavBar className="nav" backArrow={false}>
@@ -40,15 +61,15 @@ const Month = () => {
           {/* 统计区域 */}
           <div className="twoLineOverview">
             <div className="item">
-              <span className="money">{100}</span>
+              <span className="money">{income.toFixed(2)}</span>
               <span className="type">支出</span>
             </div>
             <div className="item">
-              <span className="money">{200}</span>
+              <span className="money">{pay.toFixed(2)}</span>
               <span className="type">收入</span>
             </div>
             <div className="item">
-              <span className="money">{200}</span>
+              <span className="money">{total.toFixed(2)}</span>
               <span className="type">结余</span>
             </div>
           </div>
