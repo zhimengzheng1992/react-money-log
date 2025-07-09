@@ -335,6 +335,13 @@
       "money": 9999,
       "data": "2025-07-09T21:27:55.351Z",
       "useFor": "bonus"
+    },
+    {
+      "id": "0a66",
+      "type": "pay",
+      "money": -50,
+      "date": "2025-07-01T07:00:00.000Z",
+      "useFor": "transport"
     }
   ]
 }
