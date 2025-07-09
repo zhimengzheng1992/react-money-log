@@ -5,6 +5,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import _ from "lodash";
+import DailyBill from "./components/DayBill";
 
 const Month = () => {
   const [datePickerVisible, setDatePickerVisible] = useState(false);
@@ -18,12 +19,12 @@ const Month = () => {
   }, [billList]);
   // console.log(sortedList);
 
-  const [currentList, setCurrentList] = useState([]);
+  const [currentMonthList, setMonthList] = useState([]);
   const { income, pay, total } = useMemo(() => {
-    const income = currentList
+    const income = currentMonthList
       .filter((item) => item.type === "income")
       .reduce((acc, curr) => acc + curr.money, 0);
-    const pay = currentList
+    const pay = currentMonthList
       .filter((item) => item.type === "pay")
       .reduce((acc, curr) => acc + curr.money, 0);
     return {
@@ -31,11 +32,11 @@ const Month = () => {
       pay,
       total: income + pay,
     };
-  }, [currentList]);
+  }, [currentMonthList]);
 
   useEffect(() => {
     const currentMonth = dayjs().format("YYYY | MM");
-    setCurrentList(sortedList[currentMonth] || []);
+    setMonthList(sortedList[currentMonth] || []);
   }, [sortedList]);
   //Confirm callback
   const onConfirm = (date) => {
@@ -45,8 +46,20 @@ const Month = () => {
     setCurrentDate(formattedDate);
     // console.log(sortedList[formattedDate]);
     const list = sortedList[formattedDate] || [];
-    setCurrentList(list);
+    setMonthList(list);
   };
+
+  //current month data group by each day
+  const sortedDailyList = useMemo(() => {
+    const groupData = _.groupBy(currentMonthList, (item) =>
+      dayjs(item.date).format("YYYY | MM | DD")
+    );
+    const keys = Object.keys(groupData);
+    return {
+      groupData,
+      keys,
+    };
+  }, [currentMonthList]);
 
   return (
     <div className="monthlyBill">
@@ -77,6 +90,7 @@ const Month = () => {
               <span className="type">结余</span>
             </div>
           </div>
+
           {/* 时间选择器 */}
           <DatePicker
             className="kaDate"
@@ -93,6 +107,15 @@ const Month = () => {
             max={new Date()}
           />
         </div>
+        {sortedDailyList.keys.map((key) => {
+          return (
+            <DailyBill
+              key={key}
+              date={key}
+              billList={sortedDailyList.groupData[key]}
+            />
+          );
+        })}
       </div>
     </div>
   );
