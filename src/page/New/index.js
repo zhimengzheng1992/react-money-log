@@ -5,10 +5,30 @@ import classNames from "classnames";
 import { billListData } from "@/constants";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { addBillList } from "@/store/slices/billSlice";
+import { useDispatch } from "react-redux";
 
 const New = () => {
   const navigate = useNavigate();
   const [billType, setBillType] = useState("pay");
+  const [amount, setAmount] = useState(0);
+  const handleOnChange = (value) => {
+    setAmount(value);
+  };
+
+  const [useFor, setUseFor] = useState("");
+  const dispatch = useDispatch();
+  const saveBill = () => {
+    const data = {
+      type: billType,
+      money: billType === "pay" ? -amount : +amount,
+      data: new Date(),
+      useFor,
+    };
+    console.log(data);
+    dispatch(addBillList(data));
+  };
+
   return (
     <div className="keepAccounts">
       <NavBar className="nav" onBack={() => navigate(-1)}>
@@ -45,7 +65,13 @@ const New = () => {
               />
             </div>
             <div className="kaInput">
-              <Input className="input" placeholder="0.00" type="number" />
+              <Input
+                className="input"
+                onChange={handleOnChange}
+                placeholder="0.00"
+                type="number"
+                value={amount}
+              />
               <span className="iconYuan">¥</span>
             </div>
           </div>
@@ -60,7 +86,13 @@ const New = () => {
               <div className="list">
                 {item.list.map((item) => {
                   return (
-                    <div className={classNames("item", "")} key={item.type}>
+                    <div
+                      className={classNames("item", "")}
+                      onClick={() => {
+                        setUseFor(item.type);
+                      }}
+                      key={item.type}
+                    >
                       <div className="icon">
                         <Icon type={item.type} />
                       </div>
@@ -75,7 +107,9 @@ const New = () => {
       </div>
 
       <div className="btns">
-        <Button className="btn save">保 存</Button>
+        <Button onClick={saveBill} className="btn save">
+          保 存
+        </Button>
       </div>
     </div>
   );
