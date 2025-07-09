@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import "./index.scss";
 import dayjs from "dayjs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { billTypeToName } from "@/contents";
 
 const DailyBill = ({ date, billList }) => {
@@ -21,13 +21,15 @@ const DailyBill = ({ date, billList }) => {
       total: income + pay,
     };
   }, [billList]);
+  const [visible, setVisible] = useState(false);
 
   return (
     <div className={classNames("dailyBill")}>
       <div className="header">
-        <div className="dateIcon">
+        <div className="dateIcon" onClick={() => setVisible(!visible)}>
           <span className="date">{formatted}</span>
-          <span className={classNames("arrow")}></span>
+          <span className={classNames("arrow", visible && "expand")}></span>
+          {/* <p>当前状态：{visible ? "显示" : "隐藏"}</p> */}
         </div>
         <div className="oneLineOverview">
           <div className="pay">
@@ -45,7 +47,7 @@ const DailyBill = ({ date, billList }) => {
         </div>
       </div>
       {/* Daily List */}
-      <div className="billList">
+      <div className="billList" style={{ display: visible ? "block" : "none" }}>
         {billList.map((item) => {
           return (
             <div className="bill" key={item.id}>
