@@ -20,6 +20,7 @@ const Month = () => {
   // console.log(sortedList);
 
   const [currentMonthList, setMonthList] = useState([]);
+
   const { income, pay, total } = useMemo(() => {
     const income = currentMonthList
       .filter((item) => item.type === "income")
