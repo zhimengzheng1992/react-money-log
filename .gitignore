@@ -18,6 +18,20 @@
 .env.test.local
 .env.production.local
 
+# logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+
+# IDE/editor config
+.vscode/
+.idea/
+*.suo
+*.njsproj
+*.sln
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
